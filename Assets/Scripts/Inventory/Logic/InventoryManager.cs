@@ -13,7 +13,7 @@ namespace MFarm.Inventory
         //public BluePrintDataList_SO bulePrintData;
         [Header("背包数据")]
         public InventoryBag_SO playerBagTemp;
-        public InventoryBag_SO PlayerBag;
+        public InventoryBag_SO playerBag;
         private InventoryBag_SO currentBoxBag;//当前打开的箱子的数据库
         [Header("交易")]
         public int playerMoney;
@@ -74,12 +74,13 @@ namespace MFarm.Inventory
         //    RemoveItem(ID, 1);
         //}
 
-        //private void Start()
-        //{
-        //    /*            EventHandler.CallUpdateInventoryUI(InventoryLocation.Player, PlayerBag.itemList);//游戏一开始就调用一下更新UI的委托事件*/
-        //    ISaveable saveable = this;
-        //    saveable.RegisterSaveable();
-        //}
+        private void Start()
+        {
+            //游戏一开始就调用一下更新UI的委托事件
+            EventHandler.CallUpdateInventoryUI(InventoryLocation.Player, playerBag.itemList);
+            //ISaveable saveable = this;
+            //saveable.RegisterSaveable();
+        }
         /// <summary>
         /// 通过ID返回物品信息
         /// </summary>
@@ -104,7 +105,7 @@ namespace MFarm.Inventory
                 Destroy(item.gameObject);
             }
             //添加物品数据之后需要更新一下UI
-            //EventHandler.CallUpdateInventoryUI(InventoryLocation.Player, PlayerBag.itemList);//直接调用其他脚本注册好的委托事件
+            EventHandler.CallUpdateInventoryUI(InventoryLocation.Player, playerBag.itemList);//直接调用其他脚本注册好的委托事件
         }
         /// <summary>
         /// 检查背包是否有空位
@@ -112,9 +113,9 @@ namespace MFarm.Inventory
         /// <returns></returns>
         private bool CheckBagCapacity()
         {
-            for (int i = 0; i < PlayerBag.itemList.Count; i++)
+            for (int i = 0; i < playerBag.itemList.Count; i++)
             {
-                if (PlayerBag.itemList[i].itemID == 0)
+                if (playerBag.itemList[i].itemID == 0)
                 {
                     return true;
                 }
@@ -128,9 +129,9 @@ namespace MFarm.Inventory
         /// <returns>没有找到就返回-1</returns>
         private int GetItemIndexInBag(int ID)
         {
-            for (int i = 0; i < PlayerBag.itemList.Count; i++)
+            for (int i = 0; i < playerBag.itemList.Count; i++)
             {
-                if (PlayerBag.itemList[i].itemID == ID)
+                if (playerBag.itemList[i].itemID == ID)
                 {
                     return i;
                 }
@@ -142,20 +143,20 @@ namespace MFarm.Inventory
             if (index == -1 && CheckBagCapacity())//背包中没有这个物体且背包中有空位
             {
                 var item = new InventoryItem { itemID = ID, itemAmount = amount };//new一个在背包中的Item
-                for (int i = 0; i < PlayerBag.itemList.Count; i++)
+                for (int i = 0; i < playerBag.itemList.Count; i++)
                 {
-                    if (PlayerBag.itemList[i].itemID == 0)
+                    if (playerBag.itemList[i].itemID == 0)
                     {
-                        PlayerBag.itemList[i] = item;//将空位的这个地方将捡到的新物品赋值给List
+                        playerBag.itemList[i] = item;//将空位的这个地方将捡到的新物品赋值给List
                         break;
                     }
                 }
             }
             else//背包有这个物体
             {
-                int currentAmount = PlayerBag.itemList[index].itemAmount + amount;//获取背包中这个物体的当前数量
+                int currentAmount = playerBag.itemList[index].itemAmount + amount;//获取背包中这个物体的当前数量
                 var item = new InventoryItem { itemID = ID, itemAmount = currentAmount };//获得新物体的ID和Amount
-                PlayerBag.itemList[index] = item;
+                playerBag.itemList[index] = item;
             }
         }
         /// <summary>

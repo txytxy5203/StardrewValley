@@ -19,3 +19,9 @@ public enum SlotType
     Box,
     Shop
 }
+
+public enum InventoryLocation
+{
+    Player,
+    Box
+}
