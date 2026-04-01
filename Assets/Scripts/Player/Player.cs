@@ -1,0 +1,43 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Player : MonoBehaviour
+{
+    private Rigidbody2D rb;
+
+    public float speed;
+    private float inputX;
+    private float inputY;
+
+    private Vector2 movementInput;
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
+
+
+    private void Update()
+    {
+        PlayerInput();
+    }
+    private void FixedUpdate()
+    {
+        Move();
+    }
+
+
+
+    private void Move()
+    {
+        rb.MovePosition(rb.position + movementInput * speed * Time.fixedDeltaTime);
+    }
+    private void PlayerInput()
+    {
+        // 后续换成新的输入系统
+        inputX = Input.GetAxisRaw("Horizontal");
+        inputY = Input.GetAxisRaw("Vertical");
+        movementInput = new Vector2(inputX, inputY).normalized;
+    }
+}
