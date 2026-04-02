@@ -1,13 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MFarm.Inventory
 {
     public class InventoryUI : MonoBehaviour
     {
-        [SerializeField] private SlotUI[] playerSlots;  //玩家的每一个背包格子
+        [Header("拖拽图片")]
+        public Image dragItem;
 
+        [Header("玩家背包UI")]
+        [SerializeField] private GameObject bagUI;
+        [SerializeField] private SlotUI[] playerSlots;  //玩家的每一个背包格子
+        private bool bagOpend;
 
         private void OnEnable()
         {
@@ -42,12 +48,45 @@ namespace MFarm.Inventory
             }
         }
 
-
+        private void Update()
+        {
+            if(Input.GetKeyDown(KeyCode.B))
+            {
+                OpenBagUI();
+            }
+        }
         private void Start()
         {
             for (int i = 0; i < playerSlots.Length; i++)
             {
                 playerSlots[i].slotIndex = i;
+            }
+
+            bagOpend = bagUI.activeInHierarchy;
+        }
+
+        public void OpenBagUI() 
+        {
+            bagOpend = !bagOpend;
+            bagUI.SetActive(bagOpend);
+        }
+        /// <summary>
+        /// 更新Slot高亮显示
+        /// </summary>
+        /// <param name="index">序号</param>
+        public void UpdateSlotHighlight(int index)
+        {
+            foreach (var slot in playerSlots)
+            {
+                if(slot.isSelected && slot.slotIndex == index)
+                {
+                    slot.slotHightLight.gameObject.SetActive(true);
+                }
+                else
+                {
+                    slot.isSelected = false;
+                    slot.slotHightLight.gameObject.SetActive(false);
+                }
             }
         }
     }
